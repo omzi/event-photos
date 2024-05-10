@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Upload from '#/app/(main)/upload/Upload';
 
 export const metadata: Metadata = {
-	title: `Upload Event Photos ~ ${process.env.EVENT_NAME}`,
+	title: `Upload Event Photos ~ ${process.env.NEXT_PUBLIC_EVENT_NAME}`,
 	description: 'Upload photos from your event.'
 };
 

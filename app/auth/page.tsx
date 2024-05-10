@@ -4,7 +4,7 @@ import { getSession } from '#/lib/auth';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
-	title: `Sign In ~ ${process.env.EVENT_NAME}`,
+	title: `Sign In ~ ${process.env.NEXT_PUBLIC_EVENT_NAME}`,
 	description: 'Sign in your EPG account'
 };
 

@@ -18,7 +18,7 @@ const HeroCard = ({ user }: HeroCardProps) => {
 			<SparkleIcon className='absolute text-white stroke-1 z-0 bottom-4 right-4 opacity-20 w-20 h-20' />
 
 			<h1 className='text-3xl sm:text-4xl font-semibold font-clash-display flex-wrap text-center text-white shadow-sm'>
-				EPG Fest 2024
+				{process.env.NEXT_PUBLIC_EVENT_NAME}
 			</h1>
 
 			<p className='text-white/75 text-lg text-center max-w-[35ch]'>

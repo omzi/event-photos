@@ -3,7 +3,7 @@ declare namespace NodeJS {
     AUTH_SECRET: string;
     ADMIN_EMAILS: string;
     ADMIN_PASSWORDS: string;
-    EVENT_NAME: string;
+    NEXT_PUBLIC_EVENT_NAME: string;
     [key: string]: string | undefined;
   }
 }

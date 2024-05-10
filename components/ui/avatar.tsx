@@ -1,9 +1,8 @@
 'use client';
 
-import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react';
-import * as AvatarPrimitive from '@radix-ui/react-avatar';
-
 import { cn } from '#/lib/utils';
+import * as AvatarPrimitive from '@radix-ui/react-avatar';
+import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react';
 
 const Avatar = forwardRef<
 	ElementRef<typeof AvatarPrimitive.Root>,
@@ -39,7 +38,7 @@ const AvatarFallback = forwardRef<
 	<AvatarPrimitive.Fallback
 		ref={ref}
 		className={cn(
-			'flex h-full w-full items-center justify-center rounded-full bg-muted',
+			'flex h-full w-full items-center justify-center rounded-full bg-gray-500',
 			className
 		)}
 		{...props}

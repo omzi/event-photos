@@ -1,11 +1,9 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { useTheme } from 'next-themes';
 import Providers from '#/app/providers';
-import NavBar from '#/components/shared/NavBar';
-import { Next13ProgressBar } from 'next13-progressbar';
 import { ToastContainer } from 'react-toastify';
+import { Next13ProgressBar } from 'next13-progressbar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import '#/app/fonts.css';
@@ -15,8 +13,6 @@ import 'react-toastify/dist/ReactToastify.min.css';
 const queryClient = new QueryClient();
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
-	const { systemTheme } = useTheme();
-
 	return (
 		<QueryClientProvider client={queryClient}>
 			<html
@@ -44,7 +40,7 @@ const RootLayout = ({ children }: { children: ReactNode }) => {
 							closeOnClick
 							draggable
 							pauseOnHover
-							theme={systemTheme === 'dark' ? 'dark' : 'light'}
+							theme='colored'
 						/>
 						{children}
 						<Next13ProgressBar

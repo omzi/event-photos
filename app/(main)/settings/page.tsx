@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Settings from '#/app/(main)/settings/Settings';
 
 export const metadata: Metadata = {
-	title: 'Settings ~ EPG',
+	title: `Settings ~ ${process.env.EVENT_NAME}`,
 	description: 'Edit your event details.'
 };
 

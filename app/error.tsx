@@ -17,7 +17,7 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
 	}, [error]);
 
 	return (
-		<div className='flex flex-col items-center justify-center h-full space-y-4'>
+		<div className='flex flex-col items-center justify-center h-full bg-white dark:bg-black space-y-4'>
 			<div className='hidden dark:block'>
 				<Image
 					src='/images/error-dark.svg'

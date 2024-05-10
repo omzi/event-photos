@@ -6,7 +6,7 @@ import { ModalProvider } from '#/components/providers/ModalProvider';
 
 const Providers = ({ children }: { children: ReactNode }) => {
 	return (
-		<ThemeProvider attribute='class' defaultTheme='light' enableSystem storageKey='theme'>
+		<ThemeProvider attribute='class' storageKey='theme' enableSystem disableTransitionOnChange>
 			<ModalProvider />
 			{children}
 		</ThemeProvider>

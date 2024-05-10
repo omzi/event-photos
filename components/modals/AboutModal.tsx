@@ -15,18 +15,10 @@ const AboutModal = () => {
 			<DialogContent showCloseButton={false} className='rounded-lg w-[calc(100%-20px)] sm:w-[24rem] md:w-[30rem]'>
 				<DialogHeader className='items-center space-y-3'>
 					<Image
-						src='/images/logo-light.png'
+						src='/images/logo.png'
 						height={64}
 						width={64}
 						alt='EPG Logo'
-						className='block dark:hidden'
-					/>
-					<Image
-						src='/images/logo-dark.png'
-						height={64}
-						width={64}
-						alt='EPG Logo'
-						className='hidden dark:block'
 					/>
 					<h2 className='text-lg font-bold'>About EPG</h2>
 				</DialogHeader>
@@ -38,7 +30,7 @@ const AboutModal = () => {
 							Follow on Twitter
 						</Button>
 					</Link>
-					<Link href='https://github.com/omzi/tremor-ai' target='_blank' rel='noopener noreferrer'>
+					<Link href='https://github.com/omzi/event-photos-gallery' target='_blank' rel='noopener noreferrer'>
 						<Button className='inline-flex items-center gap-x-2' size='sm' variant='outline' tabIndex={-1}>
 							<GithubIcon className='w-4 h-4' />
 							Star on GitHub

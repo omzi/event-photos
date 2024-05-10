@@ -4,12 +4,12 @@ import type { Metadata } from 'next';
 import { Button } from '#/components/ui/button';
 
 export const metadata: Metadata = {
-	title: 'Page Not Found ;( - Event Photos Gallery'
+	title: 'Page Not Found ;( ~ EPG'
 };
 
 const NotFound = () => {
 	return (
-		<div className='flex flex-col items-center justify-center gap-y-4 h-svh'>
+		<div className='flex flex-col items-center justify-center gap-y-4 bg-white dark:bg-black h-svh'>
 			<div className='hidden dark:block'>
 				<Image
 					src='/images/error-dark.svg'

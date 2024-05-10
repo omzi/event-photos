@@ -9,8 +9,8 @@ const ModeToggle = () => {
 	const { setTheme, theme } = useTheme();
 
 	return (
-		<Button className='bg-white dark:bg-black rounded-full' variant='outline' size='icon' onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-			<Sun className='h-[1.5rem] w-[1.25rem] dark:hidden' />
+		<Button className='bg-white dark:bg-black hover:bg-black/10 dark:hover:bg-white/25 rounded-full' variant='outline' size='icon' onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+			<Sun className='block h-5 w-5 dark:hidden' />
 			<Moon className='hidden h-5 w-5 dark:block' />
 			<span className='sr-only'>Toggle theme</span>
 		</Button>

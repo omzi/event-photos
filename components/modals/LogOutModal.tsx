@@ -1,22 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import { cn } from '#/lib/utils';
 import Loader from 'react-ts-loaders';
+import { toast } from 'react-toastify';
 import { useLogOut } from '#/hooks/useLogOut';
+import { usePathname } from 'next/navigation';
 import { Button } from '#/components/ui/button';
 import { AlertTriangleIcon } from 'lucide-react';
+import { cn, protectedRoutes } from '#/lib/utils';
 import * as logOut from '#/lib/actions/handleLogOut';
 import { Dialog, DialogContent, DialogHeader } from '#/components/ui/dialog';
 
 const LogOutModal = () => {
+	const pathname = usePathname();
 	const logOutModal = useLogOut();
 	const [isLoggingOut, setIsLoggingOut] = useState(false);
 
 	const handleLogOut = async () => {
 		setIsLoggingOut(true);
 		await logOut.default();
-		document.location.href = '/';
+		setIsLoggingOut(false);
+		logOutModal.onClose();
+		toast.info(`You've been logged out!`);
+
+		if (protectedRoutes.includes(pathname)) {
+			document.location.href = pathname;
+		}
 	}
 
 	const handleLogOutModalClose = () => {

@@ -8,3 +8,5 @@ export const cn = (...inputs: ClassValue[]) => {
 export const generateDefaultAvatar = (seed: string) => {
   return `https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=${seed}`;
 };
+
+export const protectedRoutes = ['/upload', '/settings'];

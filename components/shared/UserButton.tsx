@@ -1,8 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useLogOut } from '#/hooks/useLogOut';
-import { ExternalLinkIcon } from 'lucide-react';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,7 +11,9 @@ import {
 	DropdownMenuShortcut,
 	DropdownMenuTrigger
 } from '#/components/ui/dropdown-menu';
+import { useLogOut } from '#/hooks/useLogOut';
 import { Button } from '#/components/ui/button';
+import { ExternalLinkIcon } from 'lucide-react';
 import { Skeleton } from '#/components/ui/skeleton';
 import { MouseEvent as ReactMouseEvent } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar';
@@ -52,7 +52,7 @@ const UserButton = ({
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<Link href='https://github.com/omzi/tremor-ai' target='_blank'>
+					<Link href='https://github.com/omzi/event-photos-gallery' target='_blank'>
 						<DropdownMenuItem>
 							About
 							<DropdownMenuShortcut>

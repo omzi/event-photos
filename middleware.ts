@@ -1,8 +1,8 @@
 import { decrypt, users } from '#/lib/auth';
+import { protectedRoutes } from '#/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const middleware = async (request: NextRequest) => {
-  const publicRoutes = ['/', '/auth', '/details'];
   const excludePattern = /^\/(?!api\/public|_next\/static|_next\/image|images|favicon.ico).*/;
   
   if (!excludePattern.test(request.nextUrl.pathname)) {
@@ -13,7 +13,7 @@ export const middleware = async (request: NextRequest) => {
 	const session = request.cookies.get('session')?.value;
   // console.log('Middleware Session :>>', session);
 
-  if (isRootRoute || publicRoutes.includes(request.nextUrl.pathname)) {
+  if (isRootRoute || !protectedRoutes.includes(request.nextUrl.pathname)) {
     return NextResponse.next();
   }
 

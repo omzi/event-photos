@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-
 import Home from '#/app/(main)/Home';
 
 export const metadata: Metadata = {
-	title: 'Home ~ EPG',
-	description: 'View the Event Photos Gallery.'
+	title: `Home ~ ${process.env.EVENT_NAME}`,
+	description: 'View the event photos gallery.'
 };
 
 const Page = () => {

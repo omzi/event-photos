@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { useEdgeStore } from '#/lib/edgestore';
-import useExitPrompt from '#/hooks/useExitPrompt';
-import { MultiFileDropzone, type FileState } from '#/components/MultiFileDropzone';
-import { Button } from '#/components/ui/button';
 import { SaveIcon } from 'lucide-react';
+import { useEdgeStore } from '#/lib/edgestore';
+import { Button } from '#/components/ui/button';
+import useExitPrompt from '#/hooks/useExitPrompt';
+import { useEffect, useRef, useState } from 'react';
+import { MultiFileDropzone, type FileState } from '#/components/MultiFileDropzone';
 
 interface UploadResult {
 	url: string;
@@ -60,7 +60,7 @@ const Upload = () => {
   }
 
 	return (
-		<div ref={uploadPageRef} className='flex flex-col items-center'>
+		<div ref={uploadPageRef} className='flex flex-col items-center gap-y-4 bg-gray-100 dark:bg-white/15 rounded-2xl p-5 sm:p-10 mb-4'>
 			<MultiFileDropzone
 				value={fileStates}
 				disabled={isUploadDisabled}
@@ -127,9 +127,9 @@ const Upload = () => {
 				</div>
 			)} */}
 
-			<Button disabled className='h-10 p-1 mt-4 rounded-full shadow-sm disabled:grayscale bg-core hover:bg-core-secondary' variant='outline'>
-				<SaveIcon className='hidden xs:inline w-8 h-8 mr-2 p-1.5 rounded-full bg-white/25 text-white' />
-				<span className='px-2 text-white xs:pr-4 xs:px-0'>Save</span>
+			<Button className='h-10 p-1 rounded-full shadow-sm bg-core hover:bg-core-secondary' variant='outline'>
+				<SaveIcon className='w-8 h-8 mr-2 p-1.5 rounded-full bg-white/25 text-white' />
+				<span className='text-white pr-4 px-0'>Save</span>
 			</Button>
 		</div>
 	);

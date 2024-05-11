@@ -17,7 +17,7 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
 	}, [error]);
 
 	return (
-		<div className='flex flex-col items-center justify-center h-full bg-white dark:bg-black space-y-4'>
+		<div className='flex flex-col items-center justify-center h-full space-y-4 bg-white dark:bg-black'>
 			<div className='hidden dark:block'>
 				<Image
 					src='/images/error-dark.svg'
@@ -36,15 +36,15 @@ const Error: FC<ErrorProps> = ({ error, reset }) => {
 					fetchPriority='high'
 				/>
 			</div>
-			<h2 className='text-4xl font-semibold font-clash-display text-center'>An Error Occurred ;(</h2>
-			<p className='text-muted-foreground text-base text-center px-4 xs:w-96'>
+			<h2 className='text-4xl font-semibold text-center font-clash-display'>An Error Occurred ;(</h2>
+			<p className='px-4 text-base text-center text-muted-foreground xs:w-96'>
 				We hit a snag! We&apos;ll have it sorted out soon.
 			</p>
-			<Button className='bg-black hover:bg-gray-800 transition-colors duration-300' onClick={() => reset()}>
+			<Button className='transition-colors duration-300 bg-gray-800 hover:bg-gray-700' onClick={() => reset()}>
 				Try again?
 			</Button>
 			<Link href='/'>
-				<Button className='bg-core hover:bg-blue-800 transition-colors duration-300'>
+				<Button className='transition-colors duration-300 bg-core hover:bg-blue-800'>
 					Go home
 				</Button>
 			</Link>

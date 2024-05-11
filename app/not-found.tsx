@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const NotFound = () => {
 	return (
-		<div className='flex flex-col items-center justify-center gap-y-4 bg-white dark:bg-black h-svh'>
+		<div className='flex flex-col items-center justify-center bg-white gap-y-4 dark:bg-black h-svh'>
 			<div className='hidden dark:block'>
 				<Image
 					src='/images/error-dark.svg'
@@ -28,12 +28,12 @@ const NotFound = () => {
 					fetchPriority='high'
 				/>
 			</div>
-			<h2 className='text-4xl font-semibold font-clash-display text-center'>Page Not Found ;(</h2>
-			<p className='text-muted-foreground text-base text-center px-4 xs:w-96'>
+			<h2 className='text-4xl font-semibold text-center font-clash-display'>Page Not Found ;(</h2>
+			<p className='px-4 text-base text-center text-muted-foreground xs:w-96'>
 				Oops! The page you requested does not exist. Let&apos;s get you back on track.
 			</p>
 			<Link href='/'>
-				<Button className='bg-core hover:bg-blue-800 transition-colors duration-300' size='sm'>
+				<Button className='transition-colors duration-300 bg-core hover:bg-blue-800' size='sm'>
 					Go home
 				</Button>
 			</Link>

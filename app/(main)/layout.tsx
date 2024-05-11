@@ -6,13 +6,13 @@ const MainLayout = async ({ children }: { children: React.ReactNode }) => {
 	const data = await getSession();
 
 	return (
-		<main className='flex min-h-svh w-full flex-col bg-white dark:bg-black'>
+		<main className='flex flex-col w-full bg-white min-h-svh dark:bg-black'>
 			<NavBar user={data?.user} />
 
-			<div className='flex-1 overflow-auto p-4 md:px-8 w-full'>
+			<div className='flex-1 w-full p-4 overflow-auto md:px-8'>
 				<HeroCard user={data?.user} />
 
-				<section className='sm:mt-12'>
+				<section className='mt-8'>
 					{children}
 				</section>
 			</div>

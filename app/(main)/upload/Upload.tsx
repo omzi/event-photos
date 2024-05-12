@@ -1,24 +1,36 @@
 'use client';
 
+import axios from 'axios';
+import Loader from 'react-ts-loaders';
+import { Photo } from '@prisma/client';
 import { SaveIcon } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
 import { useEdgeStore } from '#/lib/edgestore';
 import { Button } from '#/components/ui/button';
 import useExitPrompt from '#/hooks/useExitPrompt';
 import { useEffect, useRef, useState } from 'react';
+import { cn, getImageDimensions } from '#/lib/utils';
+import { useQueryClient } from '@tanstack/react-query';
 import { MultiFileDropzone, type FileState } from '#/components/MultiFileDropzone';
 
 interface UploadResult {
 	url: string;
-	filename: string;
+	width: number;
+	height: number;
 	thumbnailUrl: string;
 }
 
 
 const Upload = () => {
+	const router = useRouter();
+	const queryClient = useQueryClient();
 	const { edgestore } = useEdgeStore();
-	const uploadPageRef = useRef<HTMLDivElement>(null);
+	const [_, setShowExitPrompt] = useExitPrompt(false);
+	const saveButtonRef = useRef<HTMLButtonElement>(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 	const [fileStates, setFileStates] = useState<FileState[]>([]);
-	const [showExitPrompt, setShowExitPrompt] = useExitPrompt(false);
 	const [isUploadDisabled, setIsUploadDisabled] = useState(false);
 	const [isDatabaseUpdated, setIsDatabaseUpdated] = useState(false);
 	const [uploadResults, setUploadResults] = useState<UploadResult[]>([]);
@@ -38,11 +50,17 @@ const Upload = () => {
 	}, [fileStates, isDatabaseUpdated]);
 
 	useEffect(() => {
-		if (uploadPageRef.current) {
-			uploadPageRef.current.scrollIntoView({
-				block: 'end',
-				behavior: 'smooth'
-			});
+		const pendingFiles = fileStates.filter(({ progress }) => typeof progress === 'number' && progress < 100 || progress === 'PENDING');
+		const erroredFiles = fileStates.filter(state => state.progress === 'ERROR');
+
+		if (pendingFiles.length === 0 && fileStates.length > erroredFiles.length) {
+			setIsSaveDisabled(false);
+		} else {
+			setIsSaveDisabled(true);
+		}
+
+		if (saveButtonRef.current) {
+			saveButtonRef.current.scrollIntoView({ block: 'end', behavior: 'smooth' });
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [fileStates]);
@@ -50,7 +68,7 @@ const Upload = () => {
 	const updateFileProgress = (key: string, progress: FileState['progress']) => {
     setFileStates(fileStates => {
       const newFileStates = structuredClone(fileStates);
-      const fileState = newFileStates.find(fileState => fileState.key === key);
+      const fileState = newFileStates.find(state => state.key === key);
       if (fileState) {
         fileState.progress = progress;
       }
@@ -59,8 +77,67 @@ const Upload = () => {
     });
   }
 
+	const clearFailedUploads = () => {
+    setFileStates(fileStates => {
+      const newFileStates = fileStates.filter(state => state.progress !== 'ERROR');
+			
+      return newFileStates;
+    });
+  }
+
+	const savePhotosToDatabase = async () => {
+		// Then, check if some files errored out. If yes, get a confirmation from user
+		const erroredFiles = fileStates.filter(state => state.progress === 'ERROR');
+		if (erroredFiles.length > 0) {
+			const message = erroredFiles.length === 1
+				? `An error occurred while uploading a file. Proceed?`
+				: `An error occurred while uploading ${erroredFiles.length} files. Proceed?`;
+	
+			if (!confirm(message)) return;
+		}
+		
+		const data = uploadResults.map(result => {
+			// TODO: Allow users enter metadata or use AI to generate it
+			return {
+				...result,
+				title: 'Title',
+				description: 'Description'
+			}
+		});
+
+		console.log('Data :>>', data);
+
+		// Proceed to upload
+		try {
+			setIsSubmitting(true);
+			setIsUploadDisabled(true);
+
+			const response = await axios.post<{ data: Photo[] }>('/api/photos/save', data);
+			queryClient.invalidateQueries({ queryKey: ['eventPhotos'] });
+
+			// Confirm Edgestore URLs
+			await Promise.all(
+				uploadResults.map(async ({ url }) => {
+					await edgestore.eventPhotos.confirmUpload({ url });
+				})
+			);
+
+			toast.success('Photos uploaded successfully!');
+			
+			setIsDatabaseUpdated(true);
+			setShowExitPrompt(false);
+
+			router.push('/');
+		} catch (error) {
+			console.log('Upload Error :>>', error);
+			toast.error(`An error occurred while uploading your photos`);
+		} finally {
+			setIsSubmitting(false);
+		}
+	}
+
 	return (
-		<div ref={uploadPageRef} className='flex flex-col items-center gap-y-4 bg-gray-100 dark:bg-white/15 rounded-2xl p-5 sm:p-10 mb-4'>
+		<div className='flex flex-col items-center gap-y-4 bg-gray-100 dark:bg-white/15 rounded-2xl p-5 sm:p-10 mb-4'>
 			<MultiFileDropzone
 				value={fileStates}
 				disabled={isUploadDisabled}
@@ -95,11 +172,14 @@ const Upload = () => {
 									},
 								});
 
+								const imageDimensions = await getImageDimensions(addedFileState.preview);
+
 								setUploadResults(uploadResults => [
 									...uploadResults,
 									{
 										url: imageResponse.url,
-										filename: addedFileState.file.name,
+										width: imageDimensions.width,
+										height: imageDimensions.height,
 										thumbnailUrl: `${imageResponse.thumbnailUrl}`
 									}
 								]);
@@ -111,25 +191,38 @@ const Upload = () => {
 				}}
 			/>
 
-			{/* {uploadResults.length > 0 && (
-				<div className='mt-2'>
-					{uploadResults.map(result => (
-						<a
-							key={result.url}
-							className='block mt-2 underline'
-							href={result.url}
-							target='_blank'
-							rel='noopener noreferrer'
-						>
-							{result.filename}
-						</a>
-					))}
-				</div>
-			)} */}
+			<Button
+				className={cn(
+					'rounded-lg shadow-sm hidden',
+					fileStates.filter(state => state.progress === 'ERROR').length > 0 && 'block'
+				)}
+				size='sm'
+				variant='destructive'
+				onClick={clearFailedUploads}
+			>
+				Clear failed uploads
+			</Button>
 
-			<Button className='h-10 p-1 rounded-full shadow-sm bg-core hover:bg-core-secondary' variant='outline'>
-				<SaveIcon className='w-8 h-8 mr-2 p-1.5 rounded-full bg-white/25 text-white' />
-				<span className='text-white pr-4 px-0'>Save</span>
+			<Button
+				variant='outline'
+				ref={saveButtonRef}
+				onClick={savePhotosToDatabase}
+				disabled={isSaveDisabled || isUploadDisabled}
+				className='h-10 p-1 rounded-full shadow-sm disabled:grayscale bg-core hover:bg-core-secondary'
+			>
+				<span className={cn('opacity-100 flex items-center', isSubmitting && 'opacity-0')}>
+					<SaveIcon className='w-8 h-8 mr-2 p-1.5 rounded-full bg-white/25 text-white' />
+					<span className='text-white pr-4 px-0'>Save</span>
+				</span>
+				{isSubmitting && (
+					<div className='absolute flex items-center justify-center w-full h-full'>
+						<Loader
+							type='spinner'
+							size={28}
+							className='text-white leading-[0]'
+						/>
+					</div>
+				)}
 			</Button>
 		</div>
 	);

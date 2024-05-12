@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { Photo } from '@prisma/client';
 import { useMediaQuery } from 'usehooks-ts';
+import ImageHash from '#/components/ImageHash';
 
 interface HomeProps {
 	photos: Photo[];
@@ -28,12 +28,13 @@ const Home = ({
 						<div key={idx} className='flex flex-col gap-4'>
 							{column.map(($, idx) => (
 								<div key={idx} className='relative'>
-									<Image
+									<ImageHash
 										src={$.url}
+										loading='lazy'
 										width={$.width}
 										height={$.height}
 										alt={$.description}
-										blurDataURL={$.thumbnailUrl}
+										blurhash={$.blurhash}
 										className='rounded-lg cursor-pointer w-full h-auto'
 									/>
 								</div>

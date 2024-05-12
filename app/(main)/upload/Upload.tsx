@@ -1,6 +1,7 @@
 'use client';
 
 import axios from 'axios';
+import { cn } from '#/lib/utils';
 import Loader from 'react-ts-loaders';
 import { Photo } from '@prisma/client';
 import { SaveIcon } from 'lucide-react';
@@ -10,16 +11,9 @@ import { useEdgeStore } from '#/lib/edgestore';
 import { Button } from '#/components/ui/button';
 import useExitPrompt from '#/hooks/useExitPrompt';
 import { useEffect, useRef, useState } from 'react';
-import { cn, getImageDimensions } from '#/lib/utils';
 import { useQueryClient } from '@tanstack/react-query';
 import { MultiFileDropzone, type FileState } from '#/components/MultiFileDropzone';
-
-interface UploadResult {
-	url: string;
-	width: number;
-	height: number;
-	thumbnailUrl: string;
-}
+import { ImageMetadata, UploadResult, WorkerAction, WorkerResult, workersList } from '#/lib/types';
 
 
 const Upload = () => {
@@ -27,6 +21,7 @@ const Upload = () => {
 	const queryClient = useQueryClient();
 	const { edgestore } = useEdgeStore();
 	const [_, setShowExitPrompt] = useExitPrompt(false);
+	const generateImageMetadataWorker = useRef<Worker>();
 	const saveButtonRef = useRef<HTMLButtonElement>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isSaveDisabled, setIsSaveDisabled] = useState(true);
@@ -34,11 +29,22 @@ const Upload = () => {
 	const [isUploadDisabled, setIsUploadDisabled] = useState(false);
 	const [isDatabaseUpdated, setIsDatabaseUpdated] = useState(false);
 	const [uploadResults, setUploadResults] = useState<UploadResult[]>([]);
+	const [imageMetadata, setImageMetadata] = useState<ImageMetadata[]>([]);
 
+	// Setup Web Worker
 	useEffect(() => {
+		generateImageMetadataWorker.current = new Worker(new URL('workers/generateImageMetadata.ts', import.meta.url));
+		generateImageMetadataWorker.current.onmessage = (e: MessageEvent<string>) => {
+			const { data } = e.data as unknown as WorkerResult<ImageMetadata>;
+			console.log('Image metadata received from worker :>>', data);
+			setImageMetadata(imageMetadata => [...imageMetadata, data]);
+		};
+
+		// Cleaning up the Web Worker when the component unmounts
 		return () => {
+			generateImageMetadataWorker.current?.terminate();
 			setShowExitPrompt(false);
-		}
+		};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -96,7 +102,7 @@ const Upload = () => {
 			if (!confirm(message)) return;
 		}
 		
-		const data = uploadResults.map(result => {
+		const data = imageMetadata.map(result => {
 			// TODO: Allow users enter metadata or use AI to generate it
 			return {
 				...result,
@@ -172,21 +178,22 @@ const Upload = () => {
 									},
 								});
 
-								const imageDimensions = await getImageDimensions(addedFileState.preview);
+								const data = {
+									url: imageResponse.url,
+									preview: addedFileState.preview,
+									file: addedFileState.file,
+									thumbnailUrl: `${imageResponse.thumbnailUrl}`
+								}
 
-								setUploadResults(uploadResults => [
-									...uploadResults,
-									{
-										url: imageResponse.url,
-										width: imageDimensions.width,
-										height: imageDimensions.height,
-										thumbnailUrl: `${imageResponse.thumbnailUrl}`
-									}
-								]);
+								setUploadResults(uploadResults => [ ...uploadResults, data ]);
+
+								generateImageMetadataWorker.current?.postMessage({
+									action: workersList.generateImageMetadata, data
+								} as WorkerAction<UploadResult>);
 							} catch (error) {
 								updateFileProgress(addedFileState.key, 'ERROR');
 							}
-						}),
+						})
 					);
 				}}
 			/>

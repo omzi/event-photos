@@ -15,6 +15,7 @@ model Photo {
   height       Int
   url          String   @unique
   thumbnailUrl String   @unique
+  blurhash     String?  @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

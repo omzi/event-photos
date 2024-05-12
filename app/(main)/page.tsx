@@ -1,3 +1,4 @@
+import prisma from '#/lib/prisma';
 import type { Metadata } from 'next';
 import Home from '#/app/(main)/Home';
 
@@ -6,8 +7,12 @@ export const metadata: Metadata = {
 	description: 'View the event photos gallery.'
 };
 
-const Page = () => {
-	return <Home />;
+const Page = async () => {
+	const photos = await prisma.photo.findMany({
+		orderBy: { createdAt: 'desc' }
+	});
+
+	return <Home photos={photos} />;
 };
 
 export default Page;

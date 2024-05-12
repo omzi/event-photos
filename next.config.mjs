@@ -2,6 +2,14 @@
 const nextConfig = {
 	experimental: {
 		optimizeCss: true
+	},
+	images: {
+		remotePatterns: [
+			{
+				protocol: 'https',
+				hostname: 'files.edgestore.dev'
+			}
+		]
 	}
 };
 

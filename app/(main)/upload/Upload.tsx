@@ -59,7 +59,7 @@ const Upload = () => {
 			setIsSaveDisabled(true);
 		}
 
-		if (saveButtonRef.current) {
+		if (saveButtonRef.current && fileStates.length > 0) {
 			saveButtonRef.current.scrollIntoView({ block: 'end', behavior: 'smooth' });
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -137,7 +137,7 @@ const Upload = () => {
 	}
 
 	return (
-		<div className='flex flex-col items-center gap-y-4 bg-gray-100 dark:bg-white/15 rounded-2xl p-5 sm:p-10 mb-4'>
+		<div className='flex-1 flex flex-col items-center gap-y-4 bg-gray-100 dark:bg-white/15 rounded-2xl p-5 sm:p-10 mb-4 h-full min-h-96'>
 			<MultiFileDropzone
 				value={fileStates}
 				disabled={isUploadDisabled}

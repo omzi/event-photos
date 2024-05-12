@@ -12,7 +12,7 @@ const MainLayout = async ({ children }: { children: React.ReactNode }) => {
 			<div className='flex-1 w-full p-4 overflow-auto md:px-8'>
 				<HeroCard user={data?.user} />
 
-				<section className='mt-8'>
+				<section className='mt-8 flex-1 flex flex-col'>
 					{children}
 				</section>
 			</div>

@@ -34,7 +34,7 @@ const Home = ({
 										width={$.width}
 										height={$.height}
 										alt={$.description}
-										blurhash={$.blurhash}
+										blurhash={$.blurhash || undefined}
 										className='rounded-lg cursor-pointer w-full h-auto'
 									/>
 								</div>

@@ -1,6 +1,7 @@
 import { encode } from 'blurhash';
 import { twMerge } from 'tailwind-merge';
 import { type ClassValue, clsx } from 'clsx';
+import { Photo } from '@prisma/client';
 
 export const cn = (...inputs: ClassValue[]) => {
   return twMerge(clsx(inputs));
@@ -49,4 +50,37 @@ export const getImageDimensions = (dataURI: string): Promise<{ width: number; he
     
     img.src = dataURI;
   });
+};
+
+const generateNetlifySrcSet = (url: string, width: number, height: number, isAbsolute: boolean = true) => {
+  const breakpoints = [2400, 1600, 1080, 720, 480, 320];
+
+  return breakpoints.map(breakpoint => {
+    const scaledWidth = Math.min(breakpoint, width);
+    const scaledHeight = Math.round((height / width) * scaledWidth);
+    const path = isAbsolute ? url : `/${url}`;
+    return `/.netlify/images?url=${path}&fit=cover&w=${scaledWidth}&h=${scaledHeight} ${scaledWidth}w`;
+  }).join(', ');
+};
+
+export const generatePhotoLinks = (photo: Photo, srcSet: boolean = false, isAbsolute: boolean = true) => {
+  const path = isAbsolute ? photo.url : `/${photo.url}`;
+  const url = `/.netlify/images?url=${path}&fit=cover`;
+
+  if (!srcSet) return url;
+
+  return {
+    src: url,
+    srcSet: generateNetlifySrcSet(photo.url, photo.width, photo.height)
+  };
+};
+
+export const generateBlurhashThumbnailUrl = (photo: Photo, isAbsolute: boolean = true) => {
+  const MAX_WIDTH = 150;
+  const path = isAbsolute ? photo.url : `/${photo.url}`;
+  const scaledWidth = Math.min(photo.width, MAX_WIDTH);
+  const scaledHeight = Math.round((scaledWidth * MAX_WIDTH) / MAX_WIDTH);
+
+  const blurhashThumbnailUrl = `/.netlify/images?url=${path}&fit=cover&w=${scaledWidth}&h=${scaledHeight}&fm=blurhash`;
+  return blurhashThumbnailUrl;
 };

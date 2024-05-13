@@ -1,4 +1,4 @@
 [build]
   functions = "functions"
 [images]
-  remote_images = ["https://files.edgestore.dev/.*"]
+  remote_images = ["https://files.edgestore.dev/.*", "https://api.dicebear.com/.*"]

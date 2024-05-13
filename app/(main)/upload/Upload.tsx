@@ -227,7 +227,7 @@ const Upload = () => {
 				disabled={isSaveDisabled || isUploadDisabled || completedFiles.length !== imageMetadata.length}
 				className='h-10 p-1 rounded-full shadow-sm disabled:grayscale bg-core hover:bg-core-secondary'
 			>
-				<span className={cn('opacity-100 flex items-center', isSubmitting || completedFiles.length !== imageMetadata.length && 'opacity-0')}>
+				<span className={cn('opacity-100 flex items-center', isSubmitting && completedFiles.length !== imageMetadata.length && 'opacity-0')}>
 					<SaveIcon className='w-8 h-8 mr-2 p-1.5 rounded-full bg-white/25 text-white' />
 					<span className='text-white pr-4 px-0'>Save</span>
 				</span>

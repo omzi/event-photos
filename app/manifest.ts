@@ -4,7 +4,7 @@ const manifest = (): MetadataRoute.Manifest => {
 	return {
 		name: 'Event Photos Gallery',
 		short_name: 'EPG',
-		description: 'EPG (Event Photos Gallery) is a customizable, AI-powered platform for uploading photos from your events.',
+		description: 'EPG (Event Photos Gallery) is a customizable platform for uploading photos from your events.',
 		start_url: '/',
 		display: 'standalone',
 		background_color: '#ffffff',

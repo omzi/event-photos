@@ -22,7 +22,7 @@ const AboutModal = () => {
 					/>
 					<h2 className='text-lg font-bold'>About EPG</h2>
 				</DialogHeader>
-				<p className='text-center text-muted-foreground'>EPG (Event Photos Gallery) is a customizable, AI-powered platform for uploading photos from your events.</p>
+				<p className='text-center text-muted-foreground'>EPG (Event Photos Gallery) is a customizable platform for uploading photos from your events.</p>
 				<div className='flex flex-col mx-auto text-center xs:flex-row gap-y-2 xs:gap-x-2'>
 					<Link href='https://twitter.com/intent/follow?screen_name=0xOmzi' target='_blank' rel='noopener noreferrer'>
 						<Button className='inline-flex items-center gap-x-2' size='sm' variant='outline' tabIndex={-1}>

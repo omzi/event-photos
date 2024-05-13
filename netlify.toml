@@ -2,3 +2,7 @@
   functions = "functions"
 [images]
   remote_images = ["https://files.edgestore.dev/.*", "https://api.dicebear.com/.*"]
+[[headers]]
+  for = "https://files.edgestore.dev/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, must-revalidate"

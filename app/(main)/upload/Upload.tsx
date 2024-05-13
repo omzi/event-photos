@@ -15,6 +15,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { MultiFileDropzone, type FileState } from '#/components/MultiFileDropzone';
 import { ImageMetadata, UploadResult, WorkerAction, WorkerResult, workersList } from '#/lib/types';
 
+const MAX_FILE_SIZE = 1024 * 1024 * 1; // 1 MB
 
 const Upload = () => {
 	const router = useRouter();
@@ -142,6 +143,8 @@ const Upload = () => {
 		}
 	}
 
+	const completedFiles = fileStates.filter(({ progress }) => typeof progress === 'number' && progress === 100 || progress === 'COMPLETE');
+
 	return (
 		<div className='flex-1 flex flex-col items-center gap-y-4 bg-gray-100 dark:bg-white/15 rounded-2xl p-5 sm:p-10 mb-4 h-full min-h-96'>
 			<MultiFileDropzone
@@ -157,7 +160,7 @@ const Upload = () => {
 						'image/tiff': ['.tiff']
 					},
 					maxFiles: 5,
-					maxSize: 1024 * 1024 * 5 // 5 MB
+					maxSize: MAX_FILE_SIZE
 				}}
 				onFilesAdded={async (addedFiles) => {
 					setFileStates([...fileStates, ...addedFiles]);
@@ -210,14 +213,21 @@ const Upload = () => {
 				Clear failed uploads
 			</Button>
 
+			<p className={cn(
+				'text-center text-gray-400 hidden',
+				completedFiles.length !== imageMetadata.length && 'block'
+			)}>
+				Generating image blurhash...
+			</p>
+
 			<Button
 				variant='outline'
 				ref={saveButtonRef}
 				onClick={savePhotosToDatabase}
-				disabled={isSaveDisabled || isUploadDisabled}
+				disabled={isSaveDisabled || isUploadDisabled || completedFiles.length !== imageMetadata.length}
 				className='h-10 p-1 rounded-full shadow-sm disabled:grayscale bg-core hover:bg-core-secondary'
 			>
-				<span className={cn('opacity-100 flex items-center', isSubmitting && 'opacity-0')}>
+				<span className={cn('opacity-100 flex items-center', isSubmitting || completedFiles.length !== imageMetadata.length && 'opacity-0')}>
 					<SaveIcon className='w-8 h-8 mr-2 p-1.5 rounded-full bg-white/25 text-white' />
 					<span className='text-white pr-4 px-0'>Save</span>
 				</span>
@@ -226,6 +236,17 @@ const Upload = () => {
 						<Loader
 							type='spinner'
 							size={28}
+							className='text-white leading-[0]'
+						/>
+					</div>
+				)}
+
+				{/* Different loader to indicate blurhash generation... */}
+				{completedFiles.length !== imageMetadata.length && (
+					<div className='absolute flex items-center justify-center w-full h-full'>
+						<Loader
+							type='ellipsis'
+							size={36}
 							className='text-white leading-[0]'
 						/>
 					</div>

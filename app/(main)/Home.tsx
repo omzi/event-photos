@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import { Photo } from '@prisma/client';
 import { useMediaQuery } from 'usehooks-ts';
-import { generateBlurhashThumbnailUrl, generatePhotoLinks } from '#/lib/utils';
+import ImageHash from '#/components/ImageHash';
+import { generatePhotoLinks } from '#/lib/utils';
 
 interface HomeProps {
 	photos: Photo[];
@@ -28,22 +28,15 @@ const Home = ({
 					(column, idx) => (
 						<div key={idx} className='flex flex-col gap-4'>
 							{column.map(($, idx) => {
-								const { src, srcSet } = generatePhotoLinks($, true) as { src: string; srcSet: string; };
-								const blurhash = generateBlurhashThumbnailUrl($);
-
-								console.log('Blur Hash :>>', blurhash);
-
 								return (
 									<div key={idx} className='relative'>
-										<Image
-											src={src}
-											unoptimized
+										<ImageHash
+											src={generatePhotoLinks($) as string}
 											loading='lazy'
 											width={$.width}
 											height={$.height}
 											alt={$.description}
-											blurDataURL={blurhash}
-											overrideSrc={srcSet}
+											blurhash={$.blurhash || undefined}
 											className='rounded-lg cursor-pointer w-full h-auto'
 										/>
 									</div>

@@ -54,18 +54,20 @@ export const getImageDimensions = (dataURI: string): Promise<{ width: number; he
 
 const generateNetlifySrcSet = (url: string, width: number, height: number, isAbsolute: boolean = true) => {
   const breakpoints = [2400, 1600, 1080, 720, 480, 320];
+  const baseURL = process.env.NEXT_PUBLIC_NETLIFY_URL || process.env.URL;
 
   return breakpoints.map(breakpoint => {
     const scaledWidth = Math.min(breakpoint, width);
     const scaledHeight = Math.round((height / width) * scaledWidth);
     const path = isAbsolute ? url : `/${url}`;
-    return `/.netlify/images?url=${path}&fit=cover&w=${scaledWidth}&h=${scaledHeight} ${scaledWidth}w`;
+    return `${baseURL}/.netlify/images?url=${path}&fit=cover&w=${scaledWidth}&h=${scaledHeight} ${scaledWidth}w`;
   }).join(', ');
 };
 
 export const generatePhotoLinks = (photo: Photo, srcSet: boolean = false, isAbsolute: boolean = true) => {
+  const baseURL = process.env.NEXT_PUBLIC_NETLIFY_URL || process.env.URL;
   const path = isAbsolute ? photo.url : `/${photo.url}`;
-  const url = `/.netlify/images?url=${path}&fit=cover`;
+  const url = `${baseURL}/.netlify/images?url=${path}&fit=cover`;
 
   if (!srcSet) return url;
 
@@ -77,10 +79,11 @@ export const generatePhotoLinks = (photo: Photo, srcSet: boolean = false, isAbso
 
 export const generateBlurhashThumbnailUrl = (photo: Photo, isAbsolute: boolean = true) => {
   const MAX_WIDTH = 150;
+  const baseURL = process.env.NEXT_PUBLIC_NETLIFY_URL || process.env.URL;
   const path = isAbsolute ? photo.url : `/${photo.url}`;
   const scaledWidth = Math.min(photo.width, MAX_WIDTH);
   const scaledHeight = Math.round((scaledWidth * MAX_WIDTH) / MAX_WIDTH);
 
-  const blurhashThumbnailUrl = `/.netlify/images?url=${path}&fit=cover&w=${scaledWidth}&h=${scaledHeight}&fm=blurhash`;
+  const blurhashThumbnailUrl = `${baseURL}/.netlify/images?url=${path}&fit=cover&w=${scaledWidth}&h=${scaledHeight}&fm=blurhash`;
   return blurhashThumbnailUrl;
 };
